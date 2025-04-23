@@ -16,15 +16,6 @@ ASCII Art: Displays visual designs in the console.
 Interactive Chat: Engages users with cybersecurity topics.
 Object-Oriented Design: Uses Player, Display, and StartChat classes.
 
-Project Structure
-CybersecurityChatbot/
-├── Program.cs       # Main application coordinator
-├── Player.cs        # Handles audio playback
-├── Display.cs       # Manages ASCII art
-├── StartChat.cs     # Controls chat logic
-├── greeting.wav     # Audio file
-└── README.md        # Documentation
-
 How It Works
 
 Sets console title to "Cybersecurity Awareness Chatbot".
@@ -36,6 +27,9 @@ Users interact via text input.
 Resources
 
 Microsoft .NET documentation for System.Media.PrintPlayer and console formatting.
+
+## Acknowledgments
+This project was developed with assistance from Grok 3, an AI model created by xAI, which helped refine code, enhance responses, and improve documentation.
 
 Contact
 Questions? Email [st10451592@vcconnect.edu.za].
