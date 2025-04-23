@@ -1,5 +1,5 @@
 ﻿using System;
-
+// This Cybersecurity Awareness Chatbot was developed with assistance from Grok 3, an AI model created by xAI.
 // Namespace for the Cybersecurity Awareness Chatbot application
 namespace CybersecurityChatbot
 {
