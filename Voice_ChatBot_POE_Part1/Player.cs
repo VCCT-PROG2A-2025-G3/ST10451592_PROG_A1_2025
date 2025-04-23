@@ -2,6 +2,7 @@
 using System.Media; // For SoundPlayer
 using System.IO; // For file path handling
 
+// Namespace for the Cybersecurity Awareness Chatbot application
 namespace CybersecurityChatbot
 {
     /// <summary>

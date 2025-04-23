@@ -1,6 +1,6 @@
-﻿// Display.cs
-using System;
+﻿using System;
 
+// Namespace for the Cybersecurity Awareness Chatbot application
 namespace CybersecurityChatbot
 {
     /// <summary>
@@ -14,8 +14,10 @@ namespace CybersecurityChatbot
         /// </summary>
         public void DisplayASCIIArt()
         {
-            // Set text color to cyan for a professional and visually distinct look
+            // Set console text color to cyan for a professional and visually distinct appearance
             Console.ForegroundColor = ConsoleColor.Cyan;
+
+            // Display the ASCII art logo
             Console.WriteLine(@"
           
                                                                                                     
@@ -60,10 +62,14 @@ namespace CybersecurityChatbot
                                                                                                                                                                                          
                                                                                                                                                                                                                                                                                            
             ");
-            Console.WriteLine("Cybersecurity Awareness Bot\n");
-            Console.ResetColor(); // Reset to default color after display
 
-            // Add a decorative border for readability
+            // Display the chatbot's title below the ASCII art
+            Console.WriteLine("Cybersecurity Awareness Bot\n");
+
+            // Reset console color to default to avoid affecting subsequent outputs
+            Console.ResetColor();
+
+            // Add a decorative border for visual separation and readability
             Console.WriteLine(new string('-', 60));
         }
     }

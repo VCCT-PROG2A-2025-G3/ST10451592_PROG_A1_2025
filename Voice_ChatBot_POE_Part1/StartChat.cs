@@ -1,4 +1,4 @@
-﻿// StartChat.cs
+﻿// Namespace for the Cybersecurity Awareness Chatbot application
 namespace CybersecurityChatbot
 {
     /// <summary>
@@ -6,8 +6,12 @@ namespace CybersecurityChatbot
     /// </summary>
     class StartChat
     {
+        // Private field to hold the RespondToUser instance for processing user inputs
         private readonly RespondToUser _responder;
 
+        /// <summary>
+        /// Constructor that initializes the RespondToUser instance.
+        /// </summary>
         public StartChat()
         {
             _responder = new RespondToUser();
@@ -19,14 +23,15 @@ namespace CybersecurityChatbot
         /// </summary>
         public void InitiateChat()
         {
-            // Prompt for user name with colored text for emphasis
+            // Prompt for user name with green text for visual emphasis
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write("Hello! What's your name? ");
             Console.ResetColor();
 
+            // Read and trim user input for the name
             string userName = Console.ReadLine()?.Trim();
 
-            // Validate user name input
+            // Validate user name input; assign default if empty or null
             if (string.IsNullOrEmpty(userName))
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
@@ -35,24 +40,25 @@ namespace CybersecurityChatbot
                 userName = "User";
             }
 
-            // Welcome message with personalized greeting
+            // Display a personalized welcome message
             Console.WriteLine($"\nWelcome, {userName}! I'm your Cybersecurity Awareness Bot.");
-            Console.WriteLine("Ask me about password security, phishing, safe browsing, or type 'exit' to quit.");
+            Console.WriteLine("Ask me about password security, phishing, safe browsing, or type17 'exit' to quit.");
 
             // Add a divider for visual structure
             Console.WriteLine(new string('=', 60));
 
-            // Main chat loop
+            // Main chat loop to handle user interaction
             while (true)
             {
-                // Prompt for user input
+                // Prompt for user input with green text for clarity
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.Write("You: ");
                 Console.ResetColor();
 
+                // Read and normalize user input to lowercase for consistent processing
                 string userInput = Console.ReadLine()?.Trim().ToLower();
 
-                // Validate input
+                // Validate input; prompt for valid input if empty
                 if (string.IsNullOrEmpty(userInput))
                 {
                     Console.ForegroundColor = ConsoleColor.Yellow;
@@ -61,7 +67,7 @@ namespace CybersecurityChatbot
                     continue;
                 }
 
-                // Exit condition
+                // Check for exit command to terminate the chat session
                 if (userInput == "exit")
                 {
                     Console.ForegroundColor = ConsoleColor.Magenta;
@@ -70,7 +76,7 @@ namespace CybersecurityChatbot
                     break;
                 }
 
-                // Process user input and respond
+                // Process user input using the RespondToUser instance
                 _responder.ProcessInput(userInput);
             }
         }
