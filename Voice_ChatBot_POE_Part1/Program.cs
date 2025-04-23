@@ -13,8 +13,6 @@ namespace CybersecurityChatbot
             // Set console title for better identification
             Console.Title = "Cybersecurity Awareness Chatbot";
 
-            Console.WriteLine("Testing CI for my Console App");
-
             // Create instances of the handler classes
             var player = new Player();
             var display = new Display();
