@@ -25,7 +25,7 @@ namespace CybersecurityChatbot
             _memory = memory;
             _random = new Random();
 
-            // Initialize keyword responses for cybersecurity topics
+            // Initialize keyword responses for cybersecurity topics, including phishing tips
             _keywordResponses = new Dictionary<string, List<string>>
             {
                 {
@@ -50,6 +50,14 @@ namespace CybersecurityChatbot
                         "Review your account privacy settings regularly to limit data sharing and protect your information.",
                         "Use a VPN on public Wi-Fi to encrypt your connection and keep your data private.",
                         "Be cautious about what you share online. Adjust social media privacy settings to control who sees your posts."
+                    }
+                },
+                {
+                    "phishing", new List<string>
+                    {
+                        "Be cautious of emails asking for personal information. Scammers often disguise themselves as trusted organizations.",
+                        "Check the sender's email address carefully—phishers often use slight misspellings to trick you.",
+                        "Avoid clicking links in suspicious emails. Hover over them to see the actual URL before clicking."
                     }
                 }
             };
@@ -81,40 +89,47 @@ namespace CybersecurityChatbot
                     break;
 
                 case "what's your purpose":
-                    response = $"I'm here to help you stay safe online, {_memory.GetUserName()}! Ask about password tips, scams, privacy, or anything cybersecurity-related.";
+                    response = $"I'm here to help you stay safe online, {_memory.GetUserName()}! Ask about password tips, scams, privacy, phishing tips, or anything cybersecurity-related.";
                     break;
 
                 case "what can i ask you about":
-                    response = "You can ask about password security, avoiding scams, protecting your privacy, or even safe browsing tips. What's on your mind?";
+                    response = "You can ask about password security, avoiding scams, protecting your privacy, phishing tips, or safe browsing tips. What's on your mind?";
                     break;
 
                 default:
-                    // Check for keyword-based responses
+                    // Check for keyword-based responses (including phishing)
                     string keyword = _keywordResponses.Keys.FirstOrDefault(k => input.Contains(k));
                     if (keyword != null)
                     {
                         // Set favorite topic if not already set
                         if (_memory.GetFavoriteTopic() == null)
+                        {
                             _memory.SetFavoriteTopic(keyword);
+                            response = $"Great! I'll remember that you're interested in {keyword}. It's a crucial part of staying safe online. ";
+                        }
+                        else
+                        {
+                            response = string.Empty;
+                        }
 
                         // Select a random response for the keyword
                         var responses = _keywordResponses[keyword];
-                        response = responses[_random.Next(responses.Count)];
+                        response += responses[_random.Next(responses.Count)];
 
                         // Personalize with favorite topic or sentiment
                         if (_memory.GetFavoriteTopic() == keyword)
                             response += $" Since you're interested in {keyword}, want more details?";
                         if (isSentimentDetected)
-                            response = AdjustForSentiment(sentiment, response); // Corrected method name
+                            response = AdjustForSentiment(sentiment, response);
                     }
                     else
                     {
-                        // Check for follow-up questions or simple human answers
+                        // Check for follow-up questions, confusion, or simple human answers
                         string lastInput = _memory.GetLastInput();
-                        if (lastInput != null && lastInput.Contains("want more details") && _memory.GetFavoriteTopic() != null)
+                        if (lastInput != null && (lastInput.Contains("want more details") || input.Contains("confused") || input.Contains("more info")) && _memory.GetFavoriteTopic() != null)
                         {
-                            // Check if the user provided a simple affirmative or negative response
-                            if (_affirmativeResponses.Any(input.Contains))
+                            // Handle follow-up or confusion by continuing on the current topic
+                            if (_affirmativeResponses.Any(input.Contains) || input.Contains("confused") || input.Contains("more info"))
                             {
                                 // Provide more details on the favorite topic
                                 var responses = _keywordResponses[_memory.GetFavoriteTopic()];
@@ -123,7 +138,7 @@ namespace CybersecurityChatbot
                             else if (_negativeResponses.Any(input.Contains))
                             {
                                 // Acknowledge the user's response and prompt for a new topic
-                                response = $"Okay, {_memory.GetUserName()}, let's switch gears. What else would you like to know about? Try asking about passwords, scams, or privacy.";
+                                response = $"Okay, {_memory.GetUserName()}, let's switch gears. What else would you like to know about? Try asking about passwords, scams, privacy, or phishing tips.";
                             }
                             else
                             {
@@ -134,10 +149,10 @@ namespace CybersecurityChatbot
                         else
                         {
                             // Default response for unrecognized input
-                            response = "Hmm, I didn’t catch that one! Could you rephrase or try asking about passwords, scams, or privacy?";
+                            response = "Hmm, I didn’t catch that one! Could you rephrase or try asking about passwords, scams, privacy, or phishing tips?";
                         }
                         if (isSentimentDetected)
-                            response = AdjustForSentiment(sentiment, response); // Corrected method name
+                            response = AdjustForSentiment(sentiment, response);
                     }
                     break;
             }
@@ -176,7 +191,7 @@ namespace CybersecurityChatbot
         /// <param name="sentiment">The detected sentiment.</param>
         /// <param name="baseResponse">The original response before sentiment adjustment.</param>
         /// <returns>The adjusted response incorporating the sentiment.</returns>
-        private string AdjustForSentiment(string sentiment, string baseResponse) // Corrected method name
+        private string AdjustForSentiment(string sentiment, string baseResponse)
         {
             return sentiment switch
             {
