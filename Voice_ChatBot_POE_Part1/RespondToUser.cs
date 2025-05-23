@@ -1,75 +1,155 @@
 ﻿using System;
-using System.Threading; // For simulating typing effect
-// This Cybersecurity Awareness Chatbot was developed with assistance from Grok 3, an AI model created by xAI.
-// Namespace for the Cybersecurity Awareness Chatbot application
+using System.Threading;
+using System.Collections.Generic;
+
 namespace CybersecurityChatbot
 {
     /// <summary>
-    /// Processes user input and provides detailed responses for specific cybersecurity queries.
+    /// Processes user input with dynamic responses, keyword recognition, and sentiment detection.
     /// </summary>
     class RespondToUser
     {
+        private readonly UserMemory _memory;
+        private readonly Random _random;
+        private readonly Dictionary<string, List<string>> _keywordResponses;
+
+        public RespondToUser(UserMemory memory)
+        {
+            _memory = memory;
+            _random = new Random();
+            _keywordResponses = new Dictionary<string, List<string>>
+            {
+                {
+                    "password", new List<string>
+                    {
+                        "Use strong passwords with at least 12 characters, mixing letters, numbers, and symbols. Avoid reusing passwords!",
+                        "A good password is unique and complex. Try a password manager to keep track of them securely.",
+                        "Enable two-factor authentication (2FA) to add an extra layer of security to your accounts."
+                    }
+                },
+                {
+                    "scam", new List<string>
+                    {
+                        "Scams often come as urgent emails or texts. Verify the sender before acting, and never share personal info.",
+                        "Watch for red flags like spelling errors or requests for money. Contact the organization directly if unsure.",
+                        "Report scams to your email provider or local authorities to help stop cybercriminals."
+                    }
+                },
+                {
+                    "privacy", new List<string>
+                    {
+                        "Review your account privacy settings regularly to limit data sharing and protect your information.",
+                        "Use a VPN on public Wi-Fi to encrypt your connection and keep your data private.",
+                        "Be cautious about what you share online. Adjust social media privacy settings to control who sees your posts."
+                    }
+                }
+            };
+        }
+
         /// <summary>
-        /// Processes user input and provides detailed responses for specific queries.
-        /// Includes a default response for unrecognized inputs.
+        /// Processes user input and generates a response based on keywords, sentiment, or predefined queries.
         /// </summary>
-        /// <param name="input">User's input string</param>
         public void ProcessInput(string input)
         {
-            // Initialize response variable to store the chatbot's reply
             string response;
+            input = input?.Trim().ToLower() ?? string.Empty;
+            _memory.AddToHistory(input); // Store input in history
 
-            // Use switch to match input (converted to lowercase) with predefined queries
-            switch (input.ToLower())
+            // Check for sentiment keywords
+            string sentiment = DetectSentiment(input);
+            bool isSentimentDetected = !string.IsNullOrEmpty(sentiment);
+
+            // Handle predefined queries
+            switch (input)
             {
                 case "how are you":
-                    // Friendly response encouraging further interaction
-                    response = "I'm doing great, thanks for asking! As a cybersecurity bot, my circuits are always buzzing with tips to keep you safe online. Want to dive into a topic like password security or phishing? Just let me know!";
+                    response = $"I'm buzzing with cybersecurity tips, {_memory.GetUserName()}! Want to talk about {_memory.GetFavoriteTopic() ?? "online safety"}?";
                     break;
 
                 case "what's your purpose":
-                    // Explain the bot's role in educating users about cybersecurity
-                    response = "My mission is to empower you with knowledge about staying secure in the digital world! I provide practical advice on topics like creating strong passwords, spotting phishing scams, and browsing the web safely. By raising awareness about common cyber threats, I help you protect your personal information and stay one step ahead of cybercriminals.";
+                    response = $"I'm here to help you stay safe online, {_memory.GetUserName()}! Ask about password tips, scams, privacy, or anything cybersecurity-related.";
                     break;
 
                 case "what can i ask you about":
-                    // List available topics to guide user queries
-                    response = "I'm here to answer a wide range of cybersecurity questions! You can ask about best practices for password security, how to recognize and avoid phishing attacks, tips for safe web browsing, or even general advice on protecting your data. If you're curious about specific threats like malware or two-factor authentication, I can dive into those too. Just type a topic or question, and I'll share some insights!";
-                    break;
-
-                case "password security":
-                    // Provide detailed password security best practices
-                    response = "Password security is crucial for protecting your accounts! Here are some key tips: First, create strong passwords that are at least 12 characters long, combining uppercase and lowercase letters, numbers, and special symbols (like ! or #). Avoid using easily guessable information like your name or birthdate. Second, never reuse passwords across different accounts—each one should be unique. Consider using a reputable password manager to generate and store complex passwords securely. Finally, enable two-factor authentication (2FA) whenever possible for an extra layer of protection. Want tips on choosing a good password manager?";
-                    break;
-
-                case "phishing":
-                    // Explain phishing attacks and how to avoid them
-                    response = "Phishing is a common tactic cybercriminals use to trick you into revealing sensitive information, like login credentials or financial details. These attacks often come as emails, text messages, or even phone calls that appear to be from a trusted source. To stay safe, always verify the sender’s email address or phone number before responding. Look for red flags like urgent language, spelling errors, or requests for personal information. Never click on suspicious links or download attachments from unknown sources. If you’re unsure, contact the organization directly using a verified website or phone number. Pro tip: Hover over links (without clicking) to see the actual URL. Want to know how to report a phishing attempt?";
-                    break;
-
-                case "safe browsing":
-                    // Share safe browsing habits to reduce cyber risks
-                    response = "Safe browsing habits can significantly reduce your risk of falling victim to cyber threats! Always ensure websites use 'https://' and display a padlock icon, indicating a secure connection. Be cautious about clicking on pop-up ads or links from untrusted sources, as they may lead to malicious sites. Keep your browser and antivirus software updated to protect against the latest threats. Avoid using public Wi-Fi for sensitive tasks like online banking unless you’re using a virtual private network (VPN) to encrypt your connection. Also, consider adjusting your browser’s privacy settings to block trackers and limit data collection. Curious about choosing a reliable VPN?";
+                    response = "You can ask about password security, avoiding scams, protecting your privacy, or even safe browsing tips. What's on your mind?";
                     break;
 
                 default:
-                    // Default response for unrecognized inputs
-                    response = "Hmm, I didn’t catch that one! Could you rephrase or try asking about something specific, like password security, phishing, or safe browsing? I’m here to help with all your cybersecurity questions!";
+                    // Check for keyword-based responses
+                    string keyword = _keywordResponses.Keys.FirstOrDefault(k => input.Contains(k));
+                    if (keyword != null)
+                    {
+                        // Set favorite topic if not already set
+                        if (_memory.GetFavoriteTopic() == null)
+                            _memory.SetFavoriteTopic(keyword);
+
+                        // Select a random response for the keyword
+                        var responses = _keywordResponses[keyword];
+                        response = responses[_random.Next(responses.Count)];
+
+                        // Personalize with favorite topic or sentiment
+                        if (_memory.GetFavoriteTopic() == keyword)
+                            response += $" Since you're interested in {keyword}, want more details?";
+                        if (isSentimentDetected)
+                            response = AdjustForSentiment(sentiment, response);
+                    }
+                    else
+                    {
+                        // Check for follow-up questions
+                        string lastInput = _memory.GetLastInput();
+                        if (lastInput != null && lastInput.Contains("more details") && _memory.GetFavoriteTopic() != null)
+                        {
+                            var responses = _keywordResponses[_memory.GetFavoriteTopic()];
+                            response = responses[_random.Next(responses.Count)] + " Anything else you'd like to know?";
+                        }
+                        else
+                        {
+                            response = "Hmm, I didn’t catch that one! Could you rephrase or try asking about passwords, scams, or privacy?";
+                        }
+                        if (isSentimentDetected)
+                            response = AdjustForSentiment(sentiment, response);
+                    }
                     break;
             }
 
-            // Simulate typing effect for a conversational feel
+            // Simulate typing effect
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.Write("Chatbot: "); // Display chatbot prefix
+            Console.Write($"Chatbot: ");
             Console.ResetColor();
-
-            // Write each character with a slight delay to mimic typing
             foreach (char c in response)
             {
                 Console.Write(c);
-                Thread.Sleep(30); // 30ms delay per character
+                Thread.Sleep(30);
             }
-            Console.WriteLine(); // Add newline after response
+            Console.WriteLine();
+        }
+
+        /// <summary>
+        /// Detects simple sentiments in user input.
+        /// </summary>
+        private string DetectSentiment(string input)
+        {
+            if (input.Contains("worried") || input.Contains("scared"))
+                return "worried";
+            if (input.Contains("curious") || input.Contains("interested"))
+                return "curious";
+            if (input.Contains("frustrated") || input.Contains("annoyed"))
+                return "frustrated";
+            return null;
+        }
+
+        /// <summary>
+        /// Adjusts the response based on detected sentiment.
+        /// </summary>
+        private string AdjustForSentiment(string sentiment, string baseResponse)
+        {
+            return sentiment switch
+            {
+                "worried" => $"I understand you're feeling {sentiment}, {_memory.GetUserName()}. Don't worry, let's go through this together. {baseResponse}",
+                "curious" => $"Great to see you're {sentiment}, {_memory.GetUserName()}! Here's some info to fuel your interest: {baseResponse}",
+                "frustrated" => $"I get that you're feeling {sentiment}, {_memory.GetUserName()}. Let's break this down simply: {baseResponse}",
+                _ => baseResponse
+            };
         }
     }
 }
