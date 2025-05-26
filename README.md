@@ -1,35 +1,13 @@
-Cybersecurity Awareness Chatbot - Project Submission
-Overview
-This Cybersecurity Awareness Chatbot is a C# console application developed for a student project to showcase object-oriented programming. It educates users on cybersecurity through a voice greeting, ASCII art, and an interactive chat interface.
-Purpose
-Demonstrate skills in:
+Cybersecurity Awareness Chatbot README
 
-C# and .NET console app development.
-Modular code with separate classes.
-Multimedia integration (audio, ASCII art).
-Text-based user interaction.
+Welcome to the Cybersecurity Awareness Chatbot, a console-based application designed to educate users on essential cybersecurity topics such as password security, scams, privacy, and phishing tips. Developed in C#, this chatbot offers an interactive experience with personalized responses, random tips, seamless conversation flow, memory of user details, sentiment detection, and robust error handling. This README provides a guide on how to set up, use, and contribute to the project as of 06:41 PM SAST on Monday, May 26, 2025.
 
-Features
+The chatbot includes several key features to enhance user engagement. It provides random responses for cybersecurity topics to keep interactions varied and interesting, ensuring users receive different tips each time they ask about a subject like phishing. It maintains a natural conversation flow by handling follow-up questions and user confusion, allowing for a seamless dialogue without restarting the conversation. The memory feature stores details such as the user’s name and favorite topic, using this information to personalize responses and make tips more relevant. Sentiment detection enables the chatbot to adjust its tone based on the user’s emotions, such as offering encouragement if the user expresses worry or frustration. Additionally, the chatbot handles errors gracefully by providing helpful prompts for unrecognized inputs, ensuring a smooth experience. The code is optimized with efficient data structures and a modular design, making it scalable for future enhancements.
 
-Voice Greeting: Plays greeting.wav to welcome users.
-ASCII Art: Displays visual designs in the console.
-Interactive Chat: Engages users with cybersecurity topics.
-Object-Oriented Design: Uses Player, Display, and StartChat classes.
+To use the chatbot, you’ll need a system running Windows, macOS, or Linux, with the .NET SDK (version 6.0 or later) installed, along with a code editor like Visual Studio or Visual Studio Code. An optional audio file named greeting.wav can be included for a voice greeting, which should be placed in the project root. Start by cloning the repository from GitHub using the appropriate command, replacing the placeholder with the actual repository URL. Navigate to the project directory, ensure the .NET SDK is installed by checking the version, and build the project using the dotnet build command. Finally, run the application with dotnet run to launch the chatbot.
 
-How It Works
+Once the chatbot starts, it will display an ASCII art and a greeting, then prompt you to enter your name. After providing your name, the chatbot will welcome you and suggest topics you can ask about, such as password security, scams, privacy, or phishing tips. You can type a topic to receive a random tip, and the chatbot may ask if you’d like more details, to which you can respond with "yes" or "no." For example, asking about scams might lead to a tip about verifying email senders, followed by a prompt for more details. Saying "yes" will provide another tip on the same topic, while "no" will allow you to switch topics. You can express emotions like worry or curiosity, and the chatbot will adjust its response accordingly, offering empathetic support. To end the session, simply type "exit," and the chatbot will bid you farewell.
 
-Sets console title to "Cybersecurity Awareness Chatbot".
-Plays greeting.wav voice greeting.
-Shows ASCII art.
-Starts interactive chat with cybersecurity prompts.
-Users interact via text input.
+The chatbot recognizes keywords like password, scam, privacy, and phishing to deliver relevant tips, selecting responses randomly from predefined lists for each topic. It remembers your name and favorite topic, using this to tailor future responses, such as referencing your interest in privacy when providing related advice. If you express sentiments like being worried or frustrated, the chatbot responds empathetically, adjusting its tone to offer encouragement. For unrecognized inputs, it provides a default response, prompting you to rephrase or ask about a supported topic, ensuring the application remains stable. A typing effect simulates a natural delay in responses, enhancing the conversational feel.
 
-Resources
-
-Microsoft .NET documentation for System.Media.PrintPlayer and console formatting.
-
-## Acknowledgments
-This project was developed with assistance from Grok 3, an AI model created by xAI, which helped refine code, enhance responses, and improve documentation.
-
-Contact
-Questions? Email [st10451592@vcconnect.edu.za].
+If the chatbot doesn’t start, verify that the .NET SDK is installed and the project builds successfully. The voice greeting is optional; if the greeting.wav file is missing, you can remove the related call in the Program.cs file. For unexpected behavior, ensure all class files are updated with the latest versions. To contribute, fork the repository, create a feature branch, make your changes, commit them, push to your branch, and submit a pull request with a description of your updates. This project is licensed under the MIT License, and details can be found in the LICENSE file. For support, contact the project maintainer via email or open an issue on the GitHub repository. The project was inspired by the PROG6221 assignment requirements and leverages the .NET framework for robust development. Thank you for using the Cybersecurity Awareness Chatbot!
