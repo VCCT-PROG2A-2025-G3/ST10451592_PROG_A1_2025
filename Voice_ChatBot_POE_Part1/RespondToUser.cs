@@ -112,30 +112,33 @@ namespace CybersecurityChatbot
                             response = string.Empty;
                         }
 
+                        // Set the last keyword discussed
+                        _memory.SetLastKeyword(keyword);
+
                         // Select a random response for the keyword
                         var responses = _keywordResponses[keyword];
                         response += responses[_random.Next(responses.Count)];
 
-                        // Personalize with favorite topic or sentiment
-                        if (_memory.GetFavoriteTopic() == keyword)
-                            response += $" Since you're interested in {keyword}, want more details?";
+                        // Always ask if the user wants more details
+                        response += " Want more details?";
                         if (isSentimentDetected)
                             response = AdjustForSentiment(sentiment, response);
                     }
                     else
                     {
                         // Check for follow-up questions, confusion, or simple human answers
-                        string lastInput = _memory.GetLastInput();
-                        if (lastInput != null && (lastInput.Contains("want more details") || input.Contains("confused") || input.Contains("more info")) && _memory.GetFavoriteTopic() != null)
+                        string lastInput = _memory.GetLastInput()?.ToLower().Trim() ?? string.Empty; // Normalize last input
+                        if (lastInput.Contains("want more details") && _memory.GetLastKeyword() != null)
                         {
-                            // Handle follow-up or confusion by continuing on the current topic
-                            if (_affirmativeResponses.Any(input.Contains) || input.Contains("confused") || input.Contains("more info"))
+                            // Split input into words for precise matching
+                            var inputWords = input.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                            if (inputWords.Any(word => _affirmativeResponses.Contains(word)))
                             {
-                                // Provide more details on the favorite topic
-                                var responses = _keywordResponses[_memory.GetFavoriteTopic()];
+                                // Provide more details on the last keyword
+                                var responses = _keywordResponses[_memory.GetLastKeyword()];
                                 response = responses[_random.Next(responses.Count)] + " Anything else you'd like to know?";
                             }
-                            else if (_negativeResponses.Any(input.Contains))
+                            else if (inputWords.Any(word => _negativeResponses.Contains(word)))
                             {
                                 // Acknowledge the user's response and prompt for a new topic
                                 response = $"Okay, {_memory.GetUserName()}, let's switch gears. What else would you like to know about? Try asking about passwords, scams, privacy, or phishing tips.";

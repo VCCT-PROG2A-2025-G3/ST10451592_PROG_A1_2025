@@ -10,6 +10,7 @@ namespace CybersecurityChatbot
     {
         private string _userName; // Stores the user's name
         private string _favoriteTopic; // Stores the user's favorite cybersecurity topic
+        private string _lastKeyword; // Stores the last keyword discussed
         private readonly List<string> _conversationHistory; // Stores the history of user inputs
 
         /// <summary>
@@ -19,6 +20,7 @@ namespace CybersecurityChatbot
         {
             _userName = "User"; // Default name if none provided
             _favoriteTopic = null; // Favorite topic is initially unset
+            _lastKeyword = null; // Last keyword is initially unset
             _conversationHistory = new List<string>(); // Initialize empty conversation history
         }
 
@@ -53,6 +55,22 @@ namespace CybersecurityChatbot
         /// </summary>
         /// <returns>The user's favorite topic, or null if not set.</returns>
         public string GetFavoriteTopic() => _favoriteTopic;
+
+        /// <summary>
+        /// Sets the last keyword discussed.
+        /// </summary>
+        /// <param name="keyword">The keyword to store.</param>
+        public void SetLastKeyword(string keyword)
+        {
+            if (!string.IsNullOrEmpty(keyword))
+                _lastKeyword = keyword.Trim().ToLower(); // Store the trimmed, lowercase keyword
+        }
+
+        /// <summary>
+        /// Retrieves the last keyword discussed.
+        /// </summary>
+        /// <returns>The last keyword, or null if not set.</returns>
+        public string GetLastKeyword() => _lastKeyword;
 
         /// <summary>
         /// Adds a user input to the conversation history.
